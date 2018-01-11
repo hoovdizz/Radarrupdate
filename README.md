@@ -33,8 +33,12 @@ once compliant install PSSQLite module
 one time run of " Install-Module pssqlite -Scope CurrentUser -Force"
 
 Variables you will want to change (maybe)
+
+
 $db_data_source = where you RadarrDB
+
 $replacepart =radarr (the temp folder)
+
 $logfile = (where you want to keep you log file)
 
 then set a task to run it every morning. 
