@@ -3,13 +3,19 @@ Updates the path of Radarr Movies with the first letter of the movie
 
 
 I prefer my movies in the following format
+
 X:\Plex\DVDs\Z\Zootopia [2016]
+
 X:\Plex\DVDs\S\Scream [1996]
+
 X:\Plex\DVDs\G\Gremlins [1984]
 
-instead of
+Instead of
+
 X:\Plex\DVDs\Radarr\Zootopia [2016]
+
 X:\Plex\DVDs\Radarr\Scream [1996]
+
 X:\Plex\DVDs\Radarr\Gremlins [1984]
 
 To make this work with your machine (windows)
