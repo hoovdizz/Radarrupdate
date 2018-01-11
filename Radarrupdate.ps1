@@ -69,5 +69,5 @@ Invoke-SqliteQuery -DataSource $db_data_source -Query $db_update
 
 
 #Uncomment below to Force Radarr to update the DB Sync after movie updates
-#restart-Service Radrr
+#restart-Service Radarr
 
