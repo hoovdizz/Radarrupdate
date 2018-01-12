@@ -3,6 +3,8 @@
 #Will install this modle  https://github.com/RamblingCookieMonster/PSSQLite
 #Updated to support multi sort support and a switch to turn on/off service restart
 
+$testmodeon = "n"
+
 #Things to change what you want.
 $db_data_source = "C:\ProgramData\Radarr\nzbdrone.db"
 $replacepart = "radarr"
@@ -46,9 +48,12 @@ Foreach ($item in $pullrequest)
 #Open For each loop
 {
 
-#------Before Change Check Uncomment for Diagnosis
-#$item.ID
+if ($testmodeon -eq "y"){
+#------Before Change Check
+$item.ID
 $item.Path
+
+}
 
 #$item.Monitored
 $oldpath = $item.Path 
@@ -97,26 +102,18 @@ $newpath = $item.Path -Replace $replacepart , $year
 elseif ($selection -eq "2")
 {
 ##Change temp folder to Decade
-if ($year -ge 1900 -and $year-le 1909) { $decade ="1900s"}
- if ($year -ge 1910 -and $year-le 1919) { $decade ="1910s"}
- if ($year -ge 1920 -and $year-le 1929) { $decade ="1920s"}
- if ($year -ge 1930 -and $year-le 1939) { $decade ="1930s"}
- if ($year -ge 1940 -and $year-le 1949) { $decade ="1940s"}
- if ($year -ge 1950 -and $year-le 1959) { $decade ="1950s"}
- if ($year -ge 1960 -and $year-le 1969) { $decade ="1960s"}
- if ($year -ge 1970 -and $year-le 1979) { $decade ="1970s"}
- if ($year -ge 1980 -and $year-le 1989) { $decade ="1980s"}
- if ($year -ge 1990 -and $year-le 1999) { $decade ="1990s"}
- if ($year -ge 2000 -and $year-le 2009) { $decade ="2000s"}
- if ($year -ge 2010 -and $year-le 2019) { $decade ="2010s"}
- if ($year -ge 2020 -and $year-le 2029) { $decade ="2020s"}
- if ($year -ge 2030 -and $year-le 2039) { $decade ="2030s"}
- if ($year -ge 2040 -and $year-le 2049) { $decade ="2040s"}
- if ($year -ge 2050 -and $year-le 2059) { $decade ="2050s"}
- if ($year -ge 2060 -and $year-le 2069) { $decade ="2060s"}
- if ($year -ge 2070 -and $year-le 2079) { $decade ="2070s"}
- if ($year -ge 2080 -and $year-le 2089) { $decade ="2080s"}
- if ($year -ge 2090 -and $year-le 2099) { $decade ="2090s"}
+$start= 1900
+$end = 1909
+$decade = $null
+
+while ($decade -eq $null)
+{
+if ($year -ge $start -and $year-le $end) { $decade = "$start s"}
+$start = $start+10
+$end = $end+10
+}
+$decade = $decade -replace ' ', '' 
+
 $newpath = $item.Path -Replace $replacepart , $decade
 }
 
@@ -130,12 +127,11 @@ $newpath = $item.Path -Replace $replacepart , $genre
 #Strip the apostrophes from movie folder ex "Molly's Game [2017]" --> "Mollys Game [2017]"
 $newpath = $newpath -replace "'", ""
 
-
-#-------After Change Check Uncomment for Diagnosis
-#$newid
+if ($testmodeon -eq "y"){
+#-------After Change Check
+$newid
 $newpath
-#$newmon
-
+}
 
 ##query annd facke query for log file
 $db_update = "UPDATE `Movies` SET Path = '$newpath', Monitored = '$newmon' WHERE ID =  '$newid'"
@@ -144,12 +140,15 @@ $space = "----"
 
 
 #send to log file
+if ($testmodeon -eq "n"){
 Add-Content $logfile $oldInfo
 Add-Content $logfile $db_update
 Add-Content $logfile $space
+}
 
 #Make DB changes
-Invoke-SqliteQuery -DataSource $db_data_source -Query $db_update
+if ($testmodeon -eq "n"){Invoke-SqliteQuery -DataSource $db_data_source -Query $db_update}
+
 
 #Close For each loop
 }
