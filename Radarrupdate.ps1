@@ -2,6 +2,7 @@
 #One time run of " Install-Module pssqlite -Scope CurrentUser -Force"
 #Will install this modle  https://github.com/RamblingCookieMonster/PSSQLite
 #Updated to support multi sort support and a switch to turn on/off service restart
+#1-22-2018 Fixed Null Genres ; Made service restart not part of test mode
 
 $testmodeon = "n"
 
@@ -69,9 +70,13 @@ $year = $item.Year
 
 #pull Genre out
 $genre = $item.Genres
+if (-not ([string]::IsNullOrEmpty($genre)))
+{
 $genre = $genre.trim('[]')
 $genre = $genre -replace '"', ''
 if ($genre -like '*,*') {$genre = $genre.Substring(0, $genre.IndexOf(',')) }
+}
+else { $genre = "Unkown"}
 
 
 $genre = $genre -replace "`t|`n|`r",""
@@ -153,6 +158,9 @@ if ($testmodeon -eq "n"){Invoke-SqliteQuery -DataSource $db_data_source -Query $
 #Close For each loop
 }
 
+if ($testmodeon -eq "n")
+{
 if ($restartservice -eq "Y"){restart-Service Radarr}
+}
 
 }
