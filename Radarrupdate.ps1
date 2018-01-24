@@ -3,6 +3,7 @@
 #Will install this modle  https://github.com/RamblingCookieMonster/PSSQLite
 #Updated to support multi sort support and a switch to turn on/off service restart
 #1-22-2018 Fixed Null Genres ; Made service restart not part of test mode
+#1-24-2018 Fixed Date being written to file while in test mode
 
 $testmodeon = "n"
 
@@ -39,9 +40,13 @@ $pullrequest = Invoke-SqliteQuery -Query $db_query -DataSource $db_data_source
 if (-not ([string]::IsNullOrEmpty($pullrequest)))
 {
 
+
+if ($testmodeon -eq "n")
+{
 $time = get-date 
 Add-Content $logfile $time
 $newpath = $NULL
+}
 
 #Foreach loop to change each movie found with the temp folder in its path
 Foreach ($item in $pullrequest)
