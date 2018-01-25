@@ -4,6 +4,7 @@
 #Updated to support multi sort support and a switch to turn on/off service restart
 #1-22-2018 Fixed Null Genres ; Made service restart not part of test mode
 #1-24-2018 Fixed Date being written to file while in test mode
+#1-25-2018 Added Manual Drop Down Array
 
 $testmodeon = "n"
 
@@ -11,6 +12,9 @@ $testmodeon = "n"
 $db_data_source = "C:\ProgramData\Radarr\nzbdrone.db"
 $replacepart = "radarr"
 $logfile = "C:\ProgramData\Radarr\Updatemovies.txt"
+
+# This is for selction 4, Can not be automated!!! this can be renamed or more added
+[array]$DropDownArray = "Movies","Anime Movies","Kids Movies","Horror"
 
 #y = yes to restart n= no to restat
 $restartservice = "n"
@@ -29,6 +33,7 @@ $selection = "0"
 #selection 3 aka genres
 #\Plex\DVDs\Science Fiction\Primer [2004
 
+#selection 4 aka Manual selection
 
 Import-Module PSSQLite
 
@@ -134,6 +139,55 @@ $newpath = $item.Path -Replace $replacepart , $genre
 
 }
 
+elseif ($selection -eq "4")
+{
+function Return-DropDown {
+$script:Choice = $DropDown.SelectedItem.ToString()
+$Form.Close()
+}
+
+[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+
+
+$Form = New-Object System.Windows.Forms.Form
+
+$Form.width = 600
+$Form.height = 150
+$Form.Text = 'change path'
+
+$DropDown = new-object System.Windows.Forms.ComboBox
+$DropDown.Location = new-object System.Drawing.Size(100,30)
+$DropDown.Size = new-object System.Drawing.Size(130,30)
+
+ForEach ($Item in $DropDownArray) {
+[void] $DropDown.Items.Add($Item)
+}
+
+$Form.Controls.Add($DropDown)
+
+$DropDownLabel = new-object System.Windows.Forms.Label
+$DropDownLabel.Location = new-object System.Drawing.Size(10,5) 
+$DropDownLabel.size = new-object System.Drawing.Size(550,25) 
+$DropDownLabel.Text = $oldpath
+$Form.Controls.Add($DropDownLabel)
+
+$Button = new-object System.Windows.Forms.Button
+$Button.Location = new-object System.Drawing.Size(100,50)
+$Button.Size = new-object System.Drawing.Size(100,20)
+$Button.Text = "Select Path"
+$Button.Add_Click({Return-DropDown})
+$form.Controls.Add($Button)
+
+$Form.Add_Shown({$Form.Activate()})
+[void] $Form.ShowDialog()
+
+$script:update = $choice
+if (-not ([string]::IsNullOrEmpty($choice)))
+{
+$newpath = $oldpath -Replace $replacepart , $update }
+}
+
 #Strip the apostrophes from movie folder ex "Molly's Game [2017]" --> "Mollys Game [2017]"
 $newpath = $newpath -replace "'", ""
 
@@ -146,18 +200,23 @@ $newpath
 ##query annd facke query for log file
 $db_update = "UPDATE `Movies` SET Path = '$newpath', Monitored = '$newmon' WHERE ID =  '$newid'"
 $oldInfo = "ORIGNL `Movies` WAS Path = '$oldpath', Monitored = '$oldmon' WHERE ID =  '$newid'"
+$Error = "UPDATE `Movies` SET Path = WAS NOT SET, the path was NULL"
 $space = "----"
 
 
 #send to log file
 if ($testmodeon -eq "n"){
 Add-Content $logfile $oldInfo
-Add-Content $logfile $db_update
+if (-not ([string]::IsNullOrEmpty($choice))){Add-Content $logfile $db_update}
+elseif ([string]::IsNullOrEmpty($choice)) { Add-Content $logfile $Error}
 Add-Content $logfile $space
 }
 
 #Make DB changes
-if ($testmodeon -eq "n"){Invoke-SqliteQuery -DataSource $db_data_source -Query $db_update}
+if ($testmodeon -eq "n"){
+if (-not ([string]::IsNullOrEmpty($newpath)))
+{Invoke-SqliteQuery -DataSource $db_data_source -Query $db_update}
+}
 
 
 #Close For each loop
