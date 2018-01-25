@@ -4,6 +4,7 @@
 #Updated to support multi sort support and a switch to turn on/off service restart
 #1-22-2018 Fixed Null Genres ; Made service restart not part of test mode
 #1-24-2018 Fixed Date being written to file while in test mode
+#1-25-2018 Fixed years that were 0
 #1-25-2018 Added Manual Drop Down Array
 
 $testmodeon = "n"
@@ -77,6 +78,9 @@ $moviename = $moviename.toupper()
 
 #Pull year out
 $year = $item.Year
+$1900 = "1900"
+if ([string]::IsNullOrEmpty($pullrequest)){$year = $1900}
+IF ($year-le $1900) {$year = $1900}
 
 #pull Genre out
 $genre = $item.Genres
