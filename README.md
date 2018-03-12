@@ -4,19 +4,24 @@ Updates the path of Radarr Movies with the first letter of the movie
 
 I prefer my movies in the following format
 
-X:\Plex\DVDs\Z\Zootopia [2016]
+#selection 0 aka Alpha Numeric
+#\Plex\DVDs\P\Primer [2004]
 
-X:\Plex\DVDs\S\Scream [1996]
+#selection 1 aka year
+#\Plex\DVDs\2004\Primer [2004]
 
-X:\Plex\DVDs\G\Gremlins [1984]
+#selection 2 aka Decade
+#\Plex\DVDs\2000s\Primer [2004]
+
+#selection 3 aka genres
+#\Plex\DVDs\Science Fiction\Primer [2004]
+
+
 
 Instead of
 
-X:\Plex\DVDs\Radarr\Zootopia [2016]
+X:\Plex\DVDs\Radarr\Primer [2004]
 
-X:\Plex\DVDs\Radarr\Scream [1996]
-
-X:\Plex\DVDs\Radarr\Gremlins [1984]
 
 To make this work with your machine (windows)
 ensure you have version 5 of PowerShell.
