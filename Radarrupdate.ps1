@@ -6,6 +6,7 @@
 #1-24-2018 Fixed Date being written to file while in test mode
 #1-25-2018 Fixed years that were 0
 #1-25-2018 Added Manual Drop Down Array
+#9-20-2019 Added Numerical grouping "0-9"
 
 $testmodeon = "n"
 
@@ -20,7 +21,11 @@ $logfile = "C:\ProgramData\Radarr\Updatemovies.txt"
 #y = yes to restart n= no to restat
 $restartservice = "n"
 
+#Selection of Assortment
 $selection = "0"
+
+#y = group 0-9 n = each number has their own folder This is for Selection 0 only
+$numbergrouping = "y"
 
 #selection 0 aka Alpha Numeric
 #\Plex\DVDs\P\Primer [2004]
@@ -107,7 +112,18 @@ $newid=$item.ID
 if ($selection -eq "0")
 {
 #Change temp folder to Alpha
+
+if ($numbergrouping -eq "n")
+{$newpath = $item.Path -Replace $replacepart , $moviename}
+elseif ($numbergrouping -eq "y") {
+
+
+IF(($moviename -eq "0") -OR ($moviename -eq "1" ) –OR ($moviename -eq "2" ) –OR ($moviename -eq "3") –OR ($moviename -eq "4" ) –OR ($moviename -eq "5") –OR ($moviename -eq "6") –OR ($moviename -eq "7") –OR ($moviename -eq "8") –OR ($moviename -eq "9"))
+{
+$moviename= "0-9"
+}
 $newpath = $item.Path -Replace $replacepart , $moviename
+}
 }
 
 
@@ -204,7 +220,7 @@ $newpath
 ##query annd facke query for log file
 $db_update = "UPDATE `Movies` SET Path = '$newpath', Monitored = '$newmon' WHERE ID =  '$newid'"
 $oldInfo = "ORIGNL `Movies` WAS Path = '$oldpath', Monitored = '$oldmon' WHERE ID =  '$newid'"
-$Error = "UPDATE `Movies` SET Path = WAS NOT SET, the path was NULL"
+$ErrorAlert = "UPDATE `Movies` SET Path = WAS NOT SET, the path was NULL"
 $space = "----"
 
 
@@ -212,7 +228,7 @@ $space = "----"
 if ($testmodeon -eq "n"){
 Add-Content $logfile $oldInfo
 if (-not ([string]::IsNullOrEmpty($choice))){Add-Content $logfile $db_update}
-elseif ([string]::IsNullOrEmpty($choice)) { Add-Content $logfile $Error}
+elseif ([string]::IsNullOrEmpty($choice)) { Add-Content $logfile $ErrorAlert}
 Add-Content $logfile $space
 }
 
