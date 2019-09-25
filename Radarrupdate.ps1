@@ -227,8 +227,7 @@ $space = "----"
 #send to log file
 if ($testmodeon -eq "n"){
 Add-Content $logfile $oldInfo
-if (-not ([string]::IsNullOrEmpty($choice))){Add-Content $logfile $db_update}
-elseif ([string]::IsNullOrEmpty($choice)) { Add-Content $logfile $ErrorAlert}
+Add-Content $logfile $db_update
 Add-Content $logfile $space
 }
 
