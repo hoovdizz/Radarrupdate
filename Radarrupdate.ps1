@@ -11,7 +11,10 @@
 $testmodeon = "n"
 
 #Things to change what you want.
-$db_data_source = "C:\ProgramData\Radarr\nzbdrone.db"
+#Version 2 DB
+#$db_data_source = "C:\ProgramData\Radarr\nzbdrone.db"
+
+$db_data_source = "C:\ProgramData\Radarr\radarr.db"
 $replacepart = "radarr"
 $logfile = "C:\ProgramData\Radarr\Updatemovies.txt"
 
